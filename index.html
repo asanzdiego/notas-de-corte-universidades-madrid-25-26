@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notas de corte de las universidades de Madrid curso 2025-2026</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="page-header">
+      <div>
+        <h1>Notas de corte de las universidades de Madrid curso 2025-2026</h1>
+      </div>
+    </header>
+
+    <main>
+      <section class="filters-card" aria-labelledby="filters-title">
+        <div class="filters-grid">
+          <!-- Universidad -->
+          <div class="filter-group filter-dropdown">
+            <label class="filter-label" for="universityFilterBtn">Universidad</label>
+
+            <button
+              id="universityFilterBtn"
+              class="filter-trigger"
+              type="button"
+              data-filter-toggle="university"
+              aria-expanded="false"
+              aria-controls="universityPanel"
+            >
+              <span id="universityFilterText">Cargando...</span>
+              <span class="filter-trigger-icon">▾</span>
+            </button>
+
+            <div
+              id="universityPanel"
+              class="filter-panel hidden"
+              data-panel="university"
+              role="dialog"
+              aria-label="Filtro de universidades"
+            >
+              <div class="filter-panel-header">
+                <strong>Universidades</strong>
+              </div>
+
+              <div class="filter-panel-actions">
+                <button id="selectAllUniversitiesBtn" type="button" class="text-btn">
+                  Seleccionar todas
+                </button>
+                <button id="deselectAllUniversitiesBtn" type="button" class="text-btn">
+                  Deseleccionar todas
+                </button>
+              </div>
+
+              <div id="universityOptions" class="checkbox-list" aria-label="Lista de universidades"></div>
+
+              <div class="filter-panel-footer">
+                <button type="button" class="primary-btn" data-close-panel="university">
+                  Aplicar y cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rama -->
+          <div class="filter-group filter-dropdown">
+            <label class="filter-label" for="branchFilterBtn">Rama de estudios</label>
+
+            <button
+              id="branchFilterBtn"
+              class="filter-trigger"
+              type="button"
+              data-filter-toggle="branch"
+              aria-expanded="false"
+              aria-controls="branchPanel"
+            >
+              <span id="branchFilterText">Cargando...</span>
+              <span class="filter-trigger-icon">▾</span>
+            </button>
+
+            <div
+              id="branchPanel"
+              class="filter-panel hidden"
+              data-panel="branch"
+              role="dialog"
+              aria-label="Filtro de ramas de estudios"
+            >
+              <div class="filter-panel-header">
+                <strong>Ramas de estudios</strong>
+              </div>
+
+              <div class="filter-panel-actions">
+                <button id="selectAllBranchesBtn" type="button" class="text-btn">
+                  Seleccionar todas
+                </button>
+                <button id="deselectAllBranchesBtn" type="button" class="text-btn">
+                  Deseleccionar todas
+                </button>
+              </div>
+
+              <div id="branchOptions" class="checkbox-list" aria-label="Lista de ramas de estudios"></div>
+
+              <div class="filter-panel-footer">
+                <button type="button" class="primary-btn" data-close-panel="branch">
+                  Aplicar y cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Titulación -->
+          <div class="filter-group">
+            <label class="filter-label" for="degreeInput">Titulación</label>
+            <input
+              id="degreeInput"
+              class="text-input"
+              type="text"
+              placeholder="Busca por nombre de titulación..."
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Nota -->
+          <div class="filter-group note-group">
+            <label class="filter-label">Nota de corte</label>
+
+            <div class="note-inputs">
+              <div class="number-field">
+                <input id="minNoteInput" type="number" min="5" max="14" step="0.1" value="5" />
+              </div>
+
+              <div class="number-field">
+                <input id="maxNoteInput" type="number" min="5" max="14" step="0.1" value="14" />
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-action-group">
+            <button id="clearFiltersBtn" class="secondary-btn clear-filters-btn" type="button">
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-2 6h2v8H7V9Zm4 0h2v8h-2V9Zm4 0h2v8h-2V9ZM6 7h12l-1 14H7L6 7Z" />
+                </svg>
+              </span>
+              <span>Limpiar filtros</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-card" aria-labelledby="results-title">
+        <div class="results-toolbar">
+          <div>
+            <h2 id="results-title">Resultados</h2>
+            <p id="resultsCount" class="results-count" aria-live="polite">
+              Cargando datos...
+            </p>
+          </div>
+        </div>
+
+        <div id="statusMessage" class="status-message hidden" aria-live="polite"></div>
+
+        <div class="table-wrapper">
+          <table aria-describedby="resultsCount">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="th-content">
+                    <span>Universidad</span>
+                    <span class="sort-controls" aria-label="Ordenar por universidad">
+                      <button class="sort-btn" type="button" data-sort-key="university" data-sort-direction="asc" title="Orden ascendente">
+                        ▲
+                      </button>
+                      <button class="sort-btn" type="button" data-sort-key="university" data-sort-direction="desc" title="Orden descendente">
+                        ▼
+                      </button>
+                    </span>
+                  </div>
+                </th>
+
+                <th scope="col">
+                  <div class="th-content">
+                    <span>Rama de estudios</span>
+                    <span class="sort-controls" aria-label="Ordenar por rama de estudios">
+                      <button class="sort-btn" type="button" data-sort-key="branch" data-sort-direction="asc" title="Orden ascendente">
+                        ▲
+                      </button>
+                      <button class="sort-btn" type="button" data-sort-key="branch" data-sort-direction="desc" title="Orden descendente">
+                        ▼
+                      </button>
+                    </span>
+                  </div>
+                </th>
+
+                <th scope="col">
+                  <div class="th-content">
+                    <span>Titulación</span>
+                    <span class="sort-controls" aria-label="Ordenar por titulación">
+                      <button class="sort-btn" type="button" data-sort-key="degree" data-sort-direction="asc" title="Orden ascendente">
+                        ▲
+                      </button>
+                      <button class="sort-btn" type="button" data-sort-key="degree" data-sort-direction="desc" title="Orden descendente">
+                        ▼
+                      </button>
+                    </span>
+                  </div>
+                </th>
+
+                <th scope="col" class="note-column">
+                  <div class="th-content">
+                    <span>Nota de corte</span>
+                    <span class="sort-controls" aria-label="Ordenar por nota de corte">
+                      <button class="sort-btn" type="button" data-sort-key="note" data-sort-direction="asc" title="Orden ascendente">
+                        ▲
+                      </button>
+                      <button class="sort-btn" type="button" data-sort-key="note" data-sort-direction="desc" title="Orden descendente">
+                        ▼
+                      </button>
+                    </span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+
+        <div id="emptyState" class="empty-state hidden" aria-live="polite">
+          No se han encontrado resultados.
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
