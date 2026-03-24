@@ -65,7 +65,7 @@
           </div>
 
           <!-- Rama -->
-          <div class="filter-group filter-dropdown">
+          <div class="filter-group filter-dropdown branch-filter-group">
             <label class="filter-label" for="branchFilterBtn">Rama de estudios</label>
 
             <button
@@ -124,7 +124,7 @@
 
           <!-- Nota -->
           <div class="filter-group note-group">
-            <label class="filter-label">Nota de corte</label>
+            <label class="filter-label">Nota</label>
 
             <div class="note-inputs">
               <div class="number-field">
@@ -166,7 +166,7 @@
           <table aria-describedby="resultsCount">
             <thead>
               <tr>
-                <th scope="col">
+                <th scope="col" class="university-column">
                   <div class="th-content">
                     <span>Universidad</span>
                     <span class="sort-controls" aria-label="Ordenar por universidad">
@@ -180,7 +180,7 @@
                   </div>
                 </th>
 
-                <th scope="col">
+                <th scope="col" class="branch-column">
                   <div class="th-content">
                     <span>Rama de estudios</span>
                     <span class="sort-controls" aria-label="Ordenar por rama de estudios">
@@ -194,7 +194,7 @@
                   </div>
                 </th>
 
-                <th scope="col">
+                <th scope="col" class="degree-column">
                   <div class="th-content">
                     <span>Titulación</span>
                     <span class="sort-controls" aria-label="Ordenar por titulación">
@@ -210,7 +210,7 @@
 
                 <th scope="col" class="note-column">
                   <div class="th-content">
-                    <span>Nota de corte</span>
+                    <span>Nota</span>
                     <span class="sort-controls" aria-label="Ordenar por nota de corte">
                       <button class="sort-btn" type="button" data-sort-key="note" data-sort-direction="asc" title="Orden ascendente">
                         ▲

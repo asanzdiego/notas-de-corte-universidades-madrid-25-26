@@ -392,10 +392,24 @@ tbody td.note-cell {
   text-align: right;
   white-space: nowrap;
   font-weight: 700;
+  width: 1%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.university-name-short {
+  display: none;
 }
 
 .note-column {
-  width: 140px;
+  width: 1%;
+  white-space: nowrap;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.note-column .th-content {
+  gap: 6px;
 }
 
 .th-content {
@@ -460,7 +474,7 @@ tbody td.note-cell {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 960px) {
   .app-shell {
     width: min(100% - 20px, 1400px);
     margin: 16px auto 28px;
@@ -495,5 +509,51 @@ tbody td.note-cell {
 
   .note-inputs {
     grid-template-columns: 1fr;
+  }
+
+  table {
+    min-width: 620px;
+  }
+
+  thead th,
+  tbody td {
+    padding: 12px 10px;
+  }
+
+  .branch-filter-group,
+  .branch-column,
+  .branch-cell {
+    display: none;
+  }
+
+  .university-name-full {
+    display: none;
+  }
+
+  .university-name-short {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .university-column,
+  .university-cell {
+    width: 72px;
+    max-width: 72px;
+  }
+
+  .degree-column,
+  .degree-cell {
+    width: 220px;
+    max-width: 220px;
+  }
+
+  .degree-cell {
+    overflow-wrap: anywhere;
+  }
+
+  tbody td.note-cell {
+    font-size: 0.95rem;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }

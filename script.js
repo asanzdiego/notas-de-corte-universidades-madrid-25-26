@@ -9,7 +9,6 @@
 const DATA_FILE = "./data/notas-de-corte-universidades-madrid-25-26.json";
 const NOTE_MIN_LIMIT = 5;
 const NOTE_MAX_LIMIT = 14;
-
 // ---------- Estado global ----------
 const state = {
   rawData: [],
@@ -128,17 +127,19 @@ async function loadData() {
 // Convierte el registro original del JSON a una estructura normalizada
 function normalizeRecord(item) {
   const university = safeString(item["Nombre de la Universidad"]);
+  const universityShort = safeString(item["Nombre corto de la Universidad"]);
   const branch = safeString(item["Rama de estudios"]);
   const degree = safeString(item["Nombre de la titulación"]);
   const noteRaw = safeString(item["Nota de corte ordinaria del grupo 1"]);
   const note = parseSpanishDecimal(noteRaw);
 
-  if (!university || !branch || !degree || Number.isNaN(note)) {
+  if (!university || !universityShort || !branch || !degree || Number.isNaN(note)) {
     return null;
   }
 
   return {
     university,
+    universityShort,
     branch,
     degree,
     note,
@@ -335,7 +336,10 @@ function renderCheckboxList(container, options, selectedSet, type) {
     });
 
     const text = document.createElement("span");
-    text.textContent = optionValue;
+    text.textContent =
+      type === "university"
+        ? formatUniversityWithShort(optionValue, getUniversityShortName(optionValue))
+        : optionValue;
 
     label.appendChild(checkbox);
     label.appendChild(text);
@@ -370,7 +374,10 @@ function buildSelectionSummary(selectedSet, allOptions, singular, plural) {
   if (selectedCount === 0) return `Ninguna ${singular}`;
 
   if (selectedCount === 1) {
-    return Array.from(selectedSet)[0];
+    const selectedValue = Array.from(selectedSet)[0];
+    return singular === "universidad"
+      ? formatUniversityWithShort(selectedValue, getUniversityShortName(selectedValue))
+      : selectedValue;
   }
 
   return `${selectedCount} ${plural} seleccionadas`;
@@ -467,9 +474,9 @@ function renderTable() {
   state.filteredData.forEach((record) => {
     const row = document.createElement("tr");
 
-    row.appendChild(createCell(record.university));
-    row.appendChild(createCell(record.branch));
-    row.appendChild(createCell(record.degree));
+    row.appendChild(createUniversityCell(record));
+    row.appendChild(createCell(record.branch, "branch-cell"));
+    row.appendChild(createCell(record.degree, "degree-cell"));
     row.appendChild(createCell(formatNote(record.note), "note-cell"));
 
     fragment.appendChild(row);
@@ -482,6 +489,24 @@ function createCell(text, extraClass = "") {
   const cell = document.createElement("td");
   if (extraClass) cell.className = extraClass;
   cell.textContent = text;
+  return cell;
+}
+
+function createUniversityCell(record) {
+  const cell = document.createElement("td");
+  cell.className = "university-cell";
+
+  const fullName = document.createElement("span");
+  fullName.className = "university-name-full";
+  fullName.textContent = formatUniversityWithShort(record.university, record.universityShort);
+
+  const shortName = document.createElement("span");
+  shortName.className = "university-name-short";
+  shortName.textContent = record.universityShort;
+
+  cell.appendChild(fullName);
+  cell.appendChild(shortName);
+
   return cell;
 }
 
@@ -584,4 +609,12 @@ function formatNote(value) {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1
   }).format(value);
+}
+
+function getUniversityShortName(universityName) {
+  return state.rawData.find((record) => record.university === universityName)?.universityShort ?? "";
+}
+
+function formatUniversityWithShort(universityName, universityShort) {
+  return `${universityName} (${universityShort})`;
 }
