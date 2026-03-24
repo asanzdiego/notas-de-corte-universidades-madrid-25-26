@@ -9,6 +9,7 @@
 const DATA_FILE = "./data/notas-de-corte-universidades-madrid-25-26.json";
 const NOTE_MIN_LIMIT = 5;
 const NOTE_MAX_LIMIT = 14;
+const MOBILE_MEDIA_QUERY = "(max-width: 960px)";
 // ---------- Estado global ----------
 const state = {
   rawData: [],
@@ -20,6 +21,7 @@ const state = {
   degreeQuery: "",
   minNote: NOTE_MIN_LIMIT,
   maxNote: NOTE_MAX_LIMIT,
+  filtersCollapsed: false,
   sort: {
     key: "default", // default = Universidad, Rama, Titulación ascendente
     direction: "asc"
@@ -44,8 +46,13 @@ const dom = {
 
   degreeInput: document.getElementById("degreeInput"),
 
+  toggleFiltersBtn: document.getElementById("toggleFiltersBtn"),
+  filtersContent: document.getElementById("filtersContent"),
   minNoteInput: document.getElementById("minNoteInput"),
   maxNoteInput: document.getElementById("maxNoteInput"),
+  minNoteValue: document.getElementById("minNoteValue"),
+  maxNoteValue: document.getElementById("maxNoteValue"),
+  noteRangeFill: document.getElementById("noteRangeFill"),
 
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   resultsCount: document.getElementById("resultsCount"),
@@ -58,6 +65,7 @@ const dom = {
 // ---------- Inicialización ----------
 document.addEventListener("DOMContentLoaded", () => {
   setupStaticEvents();
+  setupResponsiveFilters();
   loadData();
 });
 
@@ -278,6 +286,10 @@ function setupStaticEvents() {
   dom.clearFiltersBtn.addEventListener("click", () => {
     resetFilters();
   });
+
+  dom.toggleFiltersBtn.addEventListener("click", () => {
+    setFiltersCollapsed(!state.filtersCollapsed);
+  });
 }
 
 // ---------- Paneles ----------
@@ -300,6 +312,41 @@ function closeAllPanels() {
   dom.branchPanel.classList.add("hidden");
   dom.universityFilterBtn.setAttribute("aria-expanded", "false");
   dom.branchFilterBtn.setAttribute("aria-expanded", "false");
+}
+
+function setupResponsiveFilters() {
+  const mediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+  const syncFiltersVisibility = () => {
+    if (mediaQuery.matches) {
+      setFiltersCollapsed(state.filtersCollapsed);
+      return;
+    }
+
+    state.filtersCollapsed = false;
+    dom.filtersContent.classList.remove("hidden");
+    dom.toggleFiltersBtn.textContent = "Ocultar filtros";
+    dom.toggleFiltersBtn.setAttribute("aria-expanded", "true");
+  };
+
+  if (typeof mediaQuery.addEventListener === "function") {
+    mediaQuery.addEventListener("change", syncFiltersVisibility);
+  } else {
+    mediaQuery.addListener(syncFiltersVisibility);
+  }
+
+  state.filtersCollapsed = mediaQuery.matches;
+  syncFiltersVisibility();
+}
+
+function setFiltersCollapsed(collapsed) {
+  state.filtersCollapsed = collapsed;
+  dom.filtersContent.classList.toggle("hidden", collapsed);
+  dom.toggleFiltersBtn.textContent = collapsed ? "Mostrar filtros" : "Ocultar filtros";
+  dom.toggleFiltersBtn.setAttribute("aria-expanded", String(!collapsed));
+
+  if (collapsed) {
+    closeAllPanels();
+  }
 }
 
 // ---------- Render de opciones múltiples ----------
@@ -521,6 +568,9 @@ function updateResultsCount() {
 function updateNoteControls() {
   dom.minNoteInput.value = state.minNote.toFixed(1);
   dom.maxNoteInput.value = state.maxNote.toFixed(1);
+  dom.minNoteValue.textContent = formatNote(state.minNote);
+  dom.maxNoteValue.textContent = formatNote(state.maxNote);
+  updateNoteRangeFill();
 }
 
 // ---------- Reset ----------
@@ -617,4 +667,13 @@ function getUniversityShortName(universityName) {
 
 function formatUniversityWithShort(universityName, universityShort) {
   return `${universityName} (${universityShort})`;
+}
+
+function updateNoteRangeFill() {
+  const range = NOTE_MAX_LIMIT - NOTE_MIN_LIMIT;
+  const start = ((state.minNote - NOTE_MIN_LIMIT) / range) * 100;
+  const end = ((state.maxNote - NOTE_MIN_LIMIT) / range) * 100;
+
+  dom.noteRangeFill.style.left = `${start}%`;
+  dom.noteRangeFill.style.width = `${Math.max(end - start, 0)}%`;
 }

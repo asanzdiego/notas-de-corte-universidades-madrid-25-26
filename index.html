@@ -17,7 +17,21 @@
 
     <main>
       <section class="filters-card" aria-labelledby="filters-title">
-        <div class="filters-grid">
+        <div class="filters-card-header">
+          <h2 id="filters-title" class="filters-title">Filtros</h2>
+          <button
+            id="toggleFiltersBtn"
+            class="secondary-btn toggle-filters-btn"
+            type="button"
+            aria-expanded="true"
+            aria-controls="filtersContent"
+          >
+            Ocultar filtros
+          </button>
+        </div>
+
+        <div id="filtersContent" class="filters-content">
+          <div class="filters-grid">
           <!-- Universidad -->
           <div class="filter-group filter-dropdown">
             <label class="filter-label" for="universityFilterBtn">Universidad</label>
@@ -124,16 +138,21 @@
 
           <!-- Nota -->
           <div class="filter-group note-group">
-            <label class="filter-label">Nota</label>
+            <div class="note-header-row">
+              <label class="filter-label" for="minNoteInput">Nota</label>
 
-            <div class="note-inputs">
-              <div class="number-field">
-                <input id="minNoteInput" type="number" min="5" max="14" step="0.1" value="5" />
+              <div class="note-summary" aria-live="polite">
+                <span id="minNoteValue">5,0</span>
+                <span class="note-summary-separator">-</span>
+                <span id="maxNoteValue">14,0</span>
               </div>
+            </div>
 
-              <div class="number-field">
-                <input id="maxNoteInput" type="number" min="5" max="14" step="0.1" value="14" />
-              </div>
+            <div class="range-slider" aria-label="Rango de nota de corte">
+              <div class="range-slider-track"></div>
+              <div id="noteRangeFill" class="range-slider-fill"></div>
+              <input id="minNoteInput" class="range-input" type="range" min="5" max="14" step="0.1" value="5" />
+              <input id="maxNoteInput" class="range-input" type="range" min="5" max="14" step="0.1" value="14" />
             </div>
           </div>
 
@@ -147,13 +166,13 @@
               <span>Limpiar filtros</span>
             </button>
           </div>
+          </div>
         </div>
       </section>
 
       <section class="results-card" aria-labelledby="results-title">
         <div class="results-toolbar">
           <div>
-            <h2 id="results-title">Resultados</h2>
             <p id="resultsCount" class="results-count" aria-live="polite">
               Cargando datos...
             </p>
